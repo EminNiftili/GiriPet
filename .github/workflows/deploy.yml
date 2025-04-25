@@ -2,7 +2,7 @@ name: Deploy GiriPet API to IIS via FTP
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-and-deploy:
