@@ -42,5 +42,5 @@ jobs:
         username: ${{ secrets.VDS_USER }}
         password: ${{ secrets.VDS_PASSWORD }}
         port: ${{ secrets.VDS_PORT }}
-        local-dir: ./publish
+        local-dir: ./publish/
         server-dir: ${{ secrets.VDS_TARGET_PATH }}
