@@ -45,4 +45,4 @@ jobs:
         local-dir: ./publish/
         server-dir: ${{ secrets.VDS_TARGET_PATH }}
         protocol: ftp
-        security: "false"
+        dangerous-clean-slate: false
