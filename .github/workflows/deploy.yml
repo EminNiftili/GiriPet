@@ -35,14 +35,38 @@ jobs:
     - name: Publish API
       run: dotnet publish GiriPet.Api/GiriPet.Api.csproj -c Release -o ./publish
 
-    - name: FTP Deploy to VDS
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+    - name: Stop IIS App Pool
+      uses: appleboy/ssh-action@v1
       with:
-        server: ${{ secrets.VDS_HOST }}
+        host: ${{ secrets.VDS_HOST }}
         username: ${{ secrets.VDS_USER }}
-        password: ${{ secrets.VDS_PASSWORD }}
+        key: ${{ secrets.VDS_PRIVATE_KEY }}
         port: ${{ secrets.VDS_PORT }}
-        local-dir: ./publish/
-        server-dir: ${{ secrets.VDS_TARGET_PATH }}
-        protocol: ftp
-        dangerous-clean-slate: false
+        script: |
+          powershell -Command "
+            Import-Module WebAdministration;
+            Stop-WebAppPool -Name 'GiriPetAppPool';
+          "
+
+    - name: SCP Upload to VDS
+      uses: appleboy/scp-action@v1
+      with:
+        host: ${{ secrets.VDS_HOST }}
+        username: ${{ secrets.VDS_USER }}
+        key: ${{ secrets.VDS_PRIVATE_KEY }}
+        port: ${{ secrets.VDS_PORT }}
+        source: "./publish/*"
+        target: "${{ secrets.VDS_TARGET_PATH }}"
+
+    - name: Start IIS App Pool
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.VDS_HOST }}
+        username: ${{ secrets.VDS_USER }}
+        key: ${{ secrets.VDS_PRIVATE_KEY }}
+        port: ${{ secrets.VDS_PORT }}
+        script: |
+          powershell -Command "
+            Import-Module WebAdministration;
+            Start-WebAppPool -Name 'GiriPetAppPool';
+          "
