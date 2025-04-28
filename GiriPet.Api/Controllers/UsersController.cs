@@ -21,9 +21,9 @@ namespace GiriPet.Api.Controllers
         /// <summary>
         /// Gets user information by user ID.
         /// </summary>
-        [HttpGet("{id}")]
+        [HttpGet()]
         [Authorize]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById([FromQuery]int id)
         {
             var user = await _userService.GetByIdAsync(id);
             if (user == null)
