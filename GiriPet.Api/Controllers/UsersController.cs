@@ -10,9 +10,11 @@ namespace GiriPet.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ITokenService _tokenService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, ITokenService tokenService)
         {
+            _tokenService = tokenService;
             _userService = userService;
         }
 
@@ -24,6 +26,31 @@ namespace GiriPet.Api.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _userService.GetByIdAsync(id);
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
+        }
+
+        /// <summary>
+        /// Gets user information from token.
+        /// </summary>
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetMyProfile()
+        {
+            var authHeader = this.HttpContext.Request.Headers.Authorization.FirstOrDefault();
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+            {
+                return Unauthorized();
+            }
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var userId = _tokenService.GetUserIdFromToken(token);
+            if(userId == -1)
+            {
+                return BadRequest();
+            }
+            var user = await _userService.GetByIdAsync(userId);
             if (user == null)
                 return NotFound();
 

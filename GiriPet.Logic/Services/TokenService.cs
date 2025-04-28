@@ -38,5 +38,26 @@ namespace GiriPet.Logic.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public int GetUserIdFromToken(string token)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jwtToken = tokenHandler.ReadJwtToken(token);
+
+                var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+
+                if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    throw new SecurityTokenException("Invalid token: UserId not found or invalid.");
+                }
+                return userId;
+            }
+            catch
+            {
+                return -1;
+            }
+        }
     }
 }
