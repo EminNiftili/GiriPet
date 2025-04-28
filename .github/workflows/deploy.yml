@@ -55,7 +55,7 @@ jobs:
         username: ${{ secrets.VDS_USER }}
         key: ${{ secrets.VDS_PRIVATE_KEY }}
         port: ${{ secrets.VDS_PORT }}
-        source: "./publish/**"
+        source: "publish/**"
         target: "${{ secrets.VDS_TARGET_PATH }}"
 
     - name: Start IIS App Pool
