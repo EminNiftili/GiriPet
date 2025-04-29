@@ -2,6 +2,7 @@
 using GiriPet.Data.UnitOfWork;
 using GiriPet.Logic.Abstractions;
 using GiriPet.Logic.Dtos;
+using GiriPet.Logic.Enums;
 
 namespace GiriPet.Logic.Services
 {
@@ -9,11 +10,13 @@ namespace GiriPet.Logic.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ITokenService _tokenService;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         /// <summary>
@@ -40,6 +43,28 @@ namespace GiriPet.Logic.Services
             _unitOfWork.Users.Update(user);
             await _unitOfWork.SaveChangesAsync();
 
+            return true;
+        }
+
+        public async Task<bool> DeleteUserByIdAsync(int userId)
+        {
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+            var appointments = await _unitOfWork.Appointments.FindAsync(x => x.Pet.UserId == userId && x.StatusId != (int)AppointmentStatus.Completed);
+            var payments = await _unitOfWork.Payments.FindAsync(x => x.Appointment.Pet.UserId == userId && x.PaymentStatus == (int) PaymentStatus.Completed);
+            var hasAnyAppointment = appointments.Any();
+            var hasAnyDebt = payments.Any();
+            if (user  == null || hasAnyAppointment || hasAnyDebt)
+            {
+                return false;
+            }
+            var pets = await _unitOfWork.Pets.FindAsync(x => x.UserId == userId);
+            foreach ( var pet in pets)
+            {
+                _unitOfWork.Pets.Remove(pet);
+            }
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Users.Remove(user);
+            await _unitOfWork.SaveChangesAsync();
             return true;
         }
     }

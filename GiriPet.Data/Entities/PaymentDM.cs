@@ -6,7 +6,7 @@
         public int AppointmentId { get; set; }
         public decimal Amount { get; set; }
         public DateTime PaymentDate { get; set; }
-        public string PaymentStatus { get; set; } = null!;
+        public int PaymentStatus { get; set; }
 
         public AppointmentDM Appointment { get; set; } = null!;
     }

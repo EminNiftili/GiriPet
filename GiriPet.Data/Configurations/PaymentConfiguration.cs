@@ -14,7 +14,7 @@ namespace GiriPet.Data.Configurations
 
             builder.Property(p => p.Amount).HasColumnType("decimal(10,2)");
             builder.Property(p => p.PaymentDate).IsRequired();
-            builder.Property(p => p.PaymentStatus).IsRequired().HasMaxLength(30);
+            builder.Property(p => p.PaymentStatus).IsRequired();
 
             builder.HasOne(p => p.Appointment)
                    .WithOne(a => a.Payment)

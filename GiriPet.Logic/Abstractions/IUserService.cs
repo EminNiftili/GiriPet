@@ -13,5 +13,7 @@ namespace GiriPet.Logic.Abstractions
         /// Updates user profile data.
         /// </summary>
         Task<bool> UpdateUserAsync(UserUpdateDto dto);
+
+        Task<bool> DeleteUserByIdAsync(int userId);
     }
 }

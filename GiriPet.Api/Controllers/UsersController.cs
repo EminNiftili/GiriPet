@@ -70,5 +70,32 @@ namespace GiriPet.Api.Controllers
 
             return NoContent();
         }
+
+
+
+        /// <summary>
+        /// Deletes user profile data.
+        /// </summary>
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var authHeader = this.HttpContext.Request.Headers.Authorization.FirstOrDefault();
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+            {
+                return Unauthorized();
+            }
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var userId = _tokenService.GetUserIdFromToken(token);
+            if (userId == -1 || userId != id)
+            {
+                return NotFound();
+            }
+            var success = await _userService.DeleteUserByIdAsync(userId);
+            if (!success)
+                return BadRequest();
+
+            return NoContent();
+        }
     }
 }
