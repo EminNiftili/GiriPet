@@ -10,6 +10,7 @@
         public int Age { get; set; }
         public string Size { get; set; } = null!;
         public string? Notes { get; set; }
+        public string? ImagePath { get; set; } = null!;
 
         public UserDM User { get; set; } = null!;
         public ICollection<AppointmentDM> Appointments { get; set; } = new List<AppointmentDM>();

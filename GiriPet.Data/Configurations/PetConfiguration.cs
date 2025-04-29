@@ -17,6 +17,7 @@ namespace GiriPet.Data.Configurations
             builder.Property(p => p.Breed).IsRequired().HasMaxLength(50);
             builder.Property(p => p.Size).IsRequired().HasMaxLength(20);
             builder.Property(p => p.Notes).HasMaxLength(500);
+            builder.Property(p => p.ImagePath).HasMaxLength(500);
 
             builder.HasOne(p => p.User)
                    .WithMany(u => u.Pets)
