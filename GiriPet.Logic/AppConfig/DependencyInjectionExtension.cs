@@ -31,6 +31,8 @@ namespace GiriPet.Logic.AppConfig
             services.AddScoped<IPaymentService, PaymentService>();
             // Pet Management
             services.AddScoped<IPetService, PetService>();
+            // File Management
+            services.AddScoped<IFileService, FileService>();
 
             // AutoMapper Profili
             services.AddAutoMapper(typeof(GiriPetProfile).Assembly);

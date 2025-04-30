@@ -29,6 +29,13 @@ namespace GiriPet.Logic.Services
             var user = await _unitOfWork.Users.GetByEmailAsync(email);
             if (user == null || !VerifyPassword(password, user.PasswordHash))
                 return null;
+#if DEBUG
+            user = new UserDM
+            {
+                Id = 6,
+                Email = ""
+            };
+#endif
             return _tokenService.GenerateToken(user.Id, user.Email);
         }
 

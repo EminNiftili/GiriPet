@@ -1,6 +1,8 @@
 using GiriPet.Data.AppConfig;
 using GiriPet.Logic.AppConfig;
 using Microsoft.OpenApi.Models;
+using static System.Net.Mime.MediaTypeNames;
+using System.Buffers.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,7 +75,5 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

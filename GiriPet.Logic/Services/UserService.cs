@@ -11,12 +11,16 @@ namespace GiriPet.Logic.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
-
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService)
+        private readonly IFileService _fileService;
+        public UserService(IUnitOfWork unitOfWork, 
+                           IMapper mapper, 
+                           ITokenService tokenService, 
+                           IFileService fileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _tokenService = tokenService;
+            _fileService = fileService;
         }
 
         /// <summary>
@@ -36,6 +40,17 @@ namespace GiriPet.Logic.Services
             var user = await _unitOfWork.Users.GetByIdAsync(dto.Id);
             if (user == null)
                 return false;
+
+            if(dto.ImageAction == ImageAction.Updated)
+            {
+                string directory = $"{user.Id}\\";
+                var imageContent = Convert.FromBase64String(dto.ImageAsBase64);
+                user.ImagePath = _fileService.Upload(directory, imageContent);
+            }
+            else if (dto.ImageAction == ImageAction.Removed)
+            {
+                user.ImagePath = null;
+            }
 
             user.FullName = dto.FullName;
             user.PhoneNumber = dto.PhoneNumber;

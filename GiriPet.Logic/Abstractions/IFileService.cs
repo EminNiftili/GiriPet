@@ -2,7 +2,7 @@
 {
     public interface IFileService
     {
-        string Upload(string fileName, byte[] data);
+        string Upload(string directory, byte[] data);
         byte[] GetFile(string fullPath);
         string GetFullPath(string filePath);
 
