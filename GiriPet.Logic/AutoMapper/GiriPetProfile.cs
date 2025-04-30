@@ -17,7 +17,9 @@ namespace GiriPet.Logic.AutoMapper
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => (AppointmentStatus)src.StatusId))
                 .ReverseMap();
             CreateMap<ReviewDM, ReviewDto>().ReverseMap();
-            CreateMap<PaymentDM, PaymentDto>().ReverseMap();
+            CreateMap<PaymentDM, PaymentDto>()
+                .ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(src => (PaymentStatus)src.PaymentStatus))
+                .ReverseMap();
         }
     }
 }

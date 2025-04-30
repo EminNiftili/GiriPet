@@ -1,4 +1,6 @@
-﻿namespace GiriPet.Logic.Dtos
+﻿using GiriPet.Logic.Enums;
+
+namespace GiriPet.Logic.Dtos
 {
     public class PaymentDto
     {
@@ -6,7 +8,7 @@
         public int AppointmentId { get; set; }
         public decimal Amount { get; set; }
         public DateTime PaymentDate { get; set; }
-        public string PaymentStatus { get; set; } = null!;
+        public PaymentStatus PaymentStatus { get; set; }
     }
 
 }
