@@ -1,4 +1,5 @@
 ﻿using GiriPet.Logic.Abstractions;
+using System.IO;
 
 namespace GiriPet.Logic.Services
 {
@@ -6,12 +7,33 @@ namespace GiriPet.Logic.Services
     {
         public byte[] GetFile(string fullPath)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if(File.Exists(fullPath))
+                {
+                    return File.ReadAllBytes(fullPath);
+                }
+            }
+            catch
+            {
+
+            }
+            return null;
         }
 
-        public string GetFullPath(string filePath)
+        public string? GetFullPath(string filePath)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var appDirectory = Directory.GetCurrentDirectory();
+                var fullDirectory = $"{appDirectory}\\appFiles\\{filePath}";
+                return fullDirectory;
+            }
+            catch
+            {
+
+            }
+            return null;
         }
 
         public string Upload(string directory, byte[] data)
@@ -31,7 +53,7 @@ namespace GiriPet.Logic.Services
             {
                 return null;
             }
-            return fileName;
+            return $"{directory}{fileName}";
         }
     }
 }
