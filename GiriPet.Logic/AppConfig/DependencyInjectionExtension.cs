@@ -15,6 +15,8 @@ namespace GiriPet.Logic.AppConfig
         {
             services.AddGiriPetDataServices(configuration);
 
+            services.AddSingleton<ILocalizationService, LocalizationService>();
+
             // Logic Katmanı Servisleri
             // Auth & Token
             services.AddScoped<IAuthService, AuthService>();
