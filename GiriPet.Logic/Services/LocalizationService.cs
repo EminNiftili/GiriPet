@@ -1,11 +1,17 @@
 ﻿using GiriPet.Logic.Abstractions;
-using System.Globalization;
+using GiriPet.Logic.Models;
 
 namespace GiriPet.Logic.Services
 {
     public class LocalizationService : ILocalizationService
     {
         private IReadOnlyDictionary<int, IReadOnlyDictionary<string, string>> _tranlations;
+        private readonly LocalizationSettings _settings;
+
+        public LocalizationService(LocalizationSettings settings)
+        {
+            _settings = settings;
+        }
 
         public IReadOnlyDictionary<string, string>? GetLocalization(int langCode)
         {
@@ -29,7 +35,7 @@ namespace GiriPet.Logic.Services
 
         public string Translate(string key, string defaultValue, int? langCode = null)
         {
-            langCode ??= 0;
+            langCode ??= _settings.DefaultLangId;
             return GetText(key, langCode.Value) ?? defaultValue;
         }
 

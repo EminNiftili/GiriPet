@@ -6,6 +6,7 @@ using GiriPet.Logic.Abstractions;
 using GiriPet.Logic.Services;
 using GiriPet.Logic.Validations;
 using FluentValidation;
+using GiriPet.Logic.Models;
 
 namespace GiriPet.Logic.AppConfig
 {
@@ -15,7 +16,11 @@ namespace GiriPet.Logic.AppConfig
         {
             services.AddGiriPetDataServices(configuration);
 
-            services.AddSingleton<ILocalizationService, LocalizationService>();
+            var localizationSection = configuration.GetSection("Localizations");
+            LocalizationSettings.FromConfiguration(localizationSection);
+            var locSettings = LocalizationSettings.FromConfiguration(localizationSection);
+            var locService = new LocalizationService(locSettings);
+            services.AddSingleton<ILocalizationService>(locService);
 
             // Logic Katmanı Servisleri
             // Auth & Token
