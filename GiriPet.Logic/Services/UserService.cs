@@ -11,16 +11,16 @@ namespace GiriPet.Logic.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
-        private readonly IFileService _fileService;
+        private readonly IImageService _imageService;
         public UserService(IUnitOfWork unitOfWork, 
                            IMapper mapper, 
                            ITokenService tokenService, 
-                           IFileService fileService)
+                           IImageService imageService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _tokenService = tokenService;
-            _fileService = fileService;
+            _imageService = imageService;
         }
 
         /// <summary>
@@ -41,16 +41,7 @@ namespace GiriPet.Logic.Services
             if (user == null)
                 return false;
 
-            if(dto.ImageAction == ImageAction.Updated)
-            {
-                string directory = $"{user.Id}\\";
-                var imageContent = Convert.FromBase64String(dto.ImageAsBase64);
-                user.ImagePath = _fileService.Upload(directory, imageContent);
-            }
-            else if (dto.ImageAction == ImageAction.Removed)
-            {
-                user.ImagePath = null;
-            }
+            user.ImagePath = _imageService.Action($"{user.Id}", dto.ImageAsBase64, dto.ImageAction, user.ImagePath);
 
             user.FullName = dto.FullName;
             user.PhoneNumber = dto.PhoneNumber;
@@ -71,6 +62,10 @@ namespace GiriPet.Logic.Services
             if (user  == null || hasAnyAppointment || hasAnyDebt)
             {
                 return false;
+            }
+            if (!string.IsNullOrEmpty(user.ImagePath))
+            {
+                _imageService.Delete(user.ImagePath);
             }
             var pets = await _unitOfWork.Pets.FindAsync(x => x.UserId == userId);
             foreach ( var pet in pets)

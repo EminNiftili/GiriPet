@@ -2,6 +2,7 @@
 using GiriPet.Data.UnitOfWork;
 using GiriPet.Logic.Abstractions;
 using GiriPet.Logic.Dtos;
+using GiriPet.Logic.Enums;
 
 namespace GiriPet.Logic.Services
 {
@@ -9,11 +10,15 @@ namespace GiriPet.Logic.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IImageService _imageService;
 
-        public PetService(IUnitOfWork unitOfWork, IMapper mapper)
+        public PetService(IUnitOfWork unitOfWork, 
+                          IMapper mapper,
+                          IImageService imageService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _imageService = imageService;
         }
 
         public async Task<int> CreatePetAsync(PetDto dto)
@@ -22,10 +27,11 @@ namespace GiriPet.Logic.Services
             {
                 return -1;
             }
-            var entity = _mapper.Map<Data.Entities.PetDM>(dto);
-            await _unitOfWork.Pets.AddAsync(entity);
+            var pet = _mapper.Map<Data.Entities.PetDM>(dto);
+            pet.ImagePath = _imageService.Action($"{pet.UserId}\\", dto.ImageAsBase64, dto.ImageAction, pet.ImagePath);
+            await _unitOfWork.Pets.AddAsync(pet);
             await _unitOfWork.SaveChangesAsync();
-            return entity.Id;
+            return pet.Id;
         }
 
         public async Task<bool> UpdatePetAsync(PetDto dto)
@@ -34,17 +40,18 @@ namespace GiriPet.Logic.Services
             {
                 return false;
             }
-            var existing = await _unitOfWork.Pets.GetByIdAsync(dto.Id);
-            if (existing == null)
+            var existPet = await _unitOfWork.Pets.GetByIdAsync(dto.Id);
+            if (existPet == null)
                 return false;
-
-            existing.Name = dto.Name;
-            existing.Species = dto.Species;
-            existing.Breed = dto.Breed;
-            existing.Age = dto.Age;
-            existing.Size = dto.Size;
-            existing.Notes = dto.Notes;
-            _unitOfWork.Pets.Update(existing);
+            existPet = new();
+            existPet.ImagePath = _imageService.Action($"{existPet.UserId}\\", dto.ImageAsBase64 , dto.ImageAction, existPet.ImagePath);
+            existPet.Name = dto.Name;
+            existPet.Species = dto.Species;
+            existPet.Breed = dto.Breed;
+            existPet.Age = dto.Age;
+            existPet.Size = dto.Size;
+            existPet.Notes = dto.Notes;
+            _unitOfWork.Pets.Update(existPet);
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
@@ -70,5 +77,6 @@ namespace GiriPet.Logic.Services
             }
             return true;
         }
+
     }
 }

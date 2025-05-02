@@ -1,4 +1,6 @@
-﻿namespace GiriPet.Logic.Dtos
+﻿using GiriPet.Logic.Enums;
+
+namespace GiriPet.Logic.Dtos
 {
     public class PetDto
     {
@@ -11,6 +13,8 @@
         public string Size { get; set; } = null!;
         public string? Notes { get; set; }
         public string? ImagePath { get; set; } = null!;
+        public string? ImageAsBase64 { get; set; } = null!;
+        public ImageAction ImageAction { get; set; }
     }
 
 }

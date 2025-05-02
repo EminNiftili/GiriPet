@@ -1,10 +1,26 @@
 ﻿using GiriPet.Logic.Abstractions;
-using System.IO;
 
 namespace GiriPet.Logic.Services
 {
     internal class FileService : IFileService
     {
+        public bool Delete(string fullPath)
+        {
+            try
+            {
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                    return true;
+                }
+            }
+            catch
+            {
+
+            }
+            return false;
+        }
+
         public byte[] GetFile(string fullPath)
         {
             try
