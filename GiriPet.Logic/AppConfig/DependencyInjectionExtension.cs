@@ -17,7 +17,6 @@ namespace GiriPet.Logic.AppConfig
             services.AddGiriPetDataServices(configuration);
 
             var localizationSection = configuration.GetSection("Localizations");
-            LocalizationSettings.FromConfiguration(localizationSection);
             var locSettings = LocalizationSettings.FromConfiguration(localizationSection);
             var locService = new LocalizationService(locSettings);
             services.AddSingleton<ILocalizationService>(locService);
@@ -42,6 +41,11 @@ namespace GiriPet.Logic.AppConfig
             services.AddScoped<IFileService, FileService>();
             // Image Management
             services.AddScoped<IImageService, ImageService>();
+
+            // Logger Profili
+            var giriLogSection = configuration.GetSection("GiriLog");
+            var giriLogSettings = GiriLogSettings.FromConfiguration(giriLogSection);
+            services.AddSingleton<IGiriLogger, GiriLogger>();
 
             // AutoMapper Profili
             services.AddAutoMapper(typeof(GiriPetProfile).Assembly);
