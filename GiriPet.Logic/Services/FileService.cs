@@ -2,8 +2,32 @@
 
 namespace GiriPet.Logic.Services
 {
-    internal class FileService : IFileService
+    public class FileService : IFileService
     {
+        public bool AppendText(string directory, string fileName, string message)
+        {
+            try
+            {
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+                string fullPath = $"{directory}{fileName}";
+                if (!File.Exists(fullPath))
+                {
+                    File.Create(fullPath);
+                }
+                File.AppendAllText(fullPath, message);
+                return true;
+            }
+            catch
+            {
+
+            }
+            return false;
+
+        }
+
         public bool Delete(string fullPath)
         {
             try

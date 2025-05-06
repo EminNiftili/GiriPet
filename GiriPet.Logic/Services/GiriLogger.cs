@@ -6,6 +6,13 @@ namespace GiriPet.Logic.Services
 {
     public class GiriLogger : IGiriLogger
     {
+        private readonly IFileService _fileService;
+
+        public GiriLogger(IFileService fileService)
+        {
+            this._fileService = fileService;
+        }
+
         public void Log(string message, Enums.LogLevel level)
              => Log(new GiriLog(level, [message], null));
 
@@ -14,7 +21,11 @@ namespace GiriPet.Logic.Services
 
         private void Log(GiriLog log)
         {
-
+            var message = log.ToString();
+            string filePath = $"{DateTime.Now.ToString("dd-MM-yyyy")}_{log.Level.ToString()}";
+            var appDirectory = Directory.GetCurrentDirectory();
+            var fullDirectory = $"{appDirectory}\\log\\{filePath}";
+            _fileService.AppendText(fullDirectory, filePath, message);
         }
     }
 }
