@@ -37,10 +37,11 @@ namespace GiriPet.Logic.AppConfig
             services.AddScoped<IPaymentService, PaymentService>();
             // Pet Management
             services.AddScoped<IPetService, PetService>();
-            // File Management
-            services.AddScoped<IFileService, FileService>();
             // Image Management
             services.AddScoped<IImageService, ImageService>();
+
+            // File Management
+            services.AddSingleton<IFileService, FileService>();
 
             // Logger Profili
             var giriLogSection = configuration.GetSection("GiriLog");
